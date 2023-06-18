@@ -32,9 +32,9 @@ pipeline {
             }
         }
 
-        stage("Upload") {
+        stage("Upload to s3") {
             steps {
-                    sh 'echo "packaging"'
+                    sh 'echo "packaging and upload to s3..."'
                     sh 'aws s3 cp ferari_website.tar.gz s3://jenkins-yotam'
                     sh 'ls'
             }
@@ -63,4 +63,4 @@ pipeline {
                 sh 'sudo tar -xzf ferari_website.tar.gz'
                 sh 'git clone https://github.com/yotamdavid/ansible.git'
                 sh 'cd /ansible/ansible/'
-                sh '
+                sh 'ansible-playbook -i inventory.ini my_playbook.yml'
