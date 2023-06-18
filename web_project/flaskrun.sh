@@ -3,8 +3,7 @@
 sudo yum update -y
 sudo yum install git -y
 sudo yum install python3-pip -y
-git clone https://github.com/tomerkul/myflaskproject.git
-cd  /home/ec2-user/myflaskproject/sample-flask
-pip install -r requirements.txt
+sudo python3 apt install flask -y
+cd  /home/ec2-user/ferari_website/web_project
 FLASK_APP=app
 flask run --host=0.0.0.0
