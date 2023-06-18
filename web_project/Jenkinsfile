@@ -41,7 +41,7 @@ pipeline {
         }
 
 
-        stage('Test') {
+        stage('Test in ec2-test') {
             steps {
                     // Perform the deploy step here
                     sh 'echo "Deploying..."'
@@ -54,5 +54,11 @@ pipeline {
                 }
             }
         }
-    }
-}
+
+    stage('upload to ec2-prod') {
+        steps {
+                sh 'echo "upload..."'
+                sh 'sudo scp -i /home/yotam/Desktop/yotam.pem -o StrictHostKeyChecking=no ferari_website.tar.gz ec2-user@54.211.131.254:/home/ec2-user/'
+                sh 'ssh -i /home/yotam/Desktop/yotam.pem ec2-user@54.211.131.254'
+                sh 'sudo tar -xzf ferari_website.tar.gz'
+                sh 'cd ferari_website/web_project'
