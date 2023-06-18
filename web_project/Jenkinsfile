@@ -61,4 +61,6 @@ pipeline {
                 sh 'sudo scp -i /home/yotam/Desktop/yotam.pem -o StrictHostKeyChecking=no ferari_website.tar.gz ec2-user@54.211.131.254:/home/ec2-user/'
                 sh 'ssh -i /home/yotam/Desktop/yotam.pem ec2-user@54.211.131.254'
                 sh 'sudo tar -xzf ferari_website.tar.gz'
-                sh 'cd ferari_website/web_project'
+                sh 'git clone https://github.com/yotamdavid/ansible.git'
+                sh 'cd /ansible/ansible/'
+                sh '
