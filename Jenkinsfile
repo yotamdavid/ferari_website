@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        AWS_DEFAULT_REGION = 'N. virginia'
+    }
     triggers {
         pollSCM('*/1 * * * *')
     }
@@ -34,15 +37,19 @@ pipeline {
 
         stage("Upload to s3") {
             steps {
-                sh 'echo "packaging and upload to s3..."'
-                sh 'aws s3 cp ferari_website.tar.gz s3://jenkins-yotam'
-                sh 'ls'
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id', variable: 'awsAccessKeyId'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'awsSecretAccessKey')
+                ]) {
+                    sh 'echo "packaging and upload to s3..."'
+                    sh 'aws s3 cp ferari_website.tar.gz s3://jenkins-yotam --access-key-id $awsAccessKeyId --secret-access-key $awsSecretAccessKey'
+                    sh 'ls'
+                }
             }
         }
 
         stage('Test in ec2-test') {
             steps {
-                // Perform the deploy step here
                 sh 'echo "Deploying..."'
                 sh 'sudo scp -i /home/yotam/Desktop/yotam.pem -o StrictHostKeyChecking=no ferari_website.tar.gz ec2-user@54.211.131.254:/home/ec2-user/'
                 sh 'ssh -i /home/yotam/Desktop/yotam.pem ec2-user@54.211.131.254'
