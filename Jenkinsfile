@@ -51,6 +51,7 @@ pipeline {
                     sh 'cd ferari_website/web_project'
                     sh 'sudo bash flaskrun.sh'
                     sh 'sudo bash /home/ec2-user/ferari_website/web_project/test.sh'
+                    sh 'echo "tasting.."'
                 }
             }
         }
