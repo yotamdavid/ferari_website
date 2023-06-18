@@ -34,36 +34,15 @@ pipeline {
 
         stage("Upload") {
             steps {
-                withCredentials([
-                    [
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: 'aws-jenkins',
-                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                    ]
-                ]) {
-                    sh 'aws s3 cp ferari_website.tar.gz s3://jenkins-yotam/ferari_website'
-                }
+                    sh 'echo "packaging"'
+                    sh 'aws s3 cp ferari_website.tar.gz s3://jenkins-yotam'
+                    sh 'ls'
             }
         }
 
-        /*stage('Test1') {
-            steps {
-                // Perform the first test step here
-                sh 'echo "Testing..."'
-            }
-        }*/
 
         stage('Test') {
             steps {
-                withCredentials([
-                    [
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: 'aws-jenkins',
-                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                    ]
-                ]){
                     // Perform the deploy step here
                     sh 'echo "Deploying..."'
                     sh 'sudo scp -i /home/yotam/Desktop/yotam.pem -o StrictHostKeyChecking=no ferari_website.tar.gz ec2-user@54.211.131.254:/home/ec2-user/'
