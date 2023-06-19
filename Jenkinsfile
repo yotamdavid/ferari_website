@@ -35,15 +35,17 @@ pipeline {
             }
         }
 
-        stage("Upload to s3") {
+        stage("Upload to S3") {
             steps {
                 withCredentials([
-                    string(credentialsId: 'aws-access-key-id', variable: 'awsAccessKeyId'),
-                    string(credentialsId: 'aws-secret-access-key', variable: 'awsSecretAccessKey')
+                    [
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws-jenkins',
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]
                 ]) {
-                    sh 'echo "packaging and upload to s3..."'
-                    sh 'aws s3 cp ferari_website.tar.gz s3://jenkins-yotam --access-key-id $awsAccessKeyId --secret-access-key $awsSecretAccessKey'
-                    sh 'ls'
+                    sh 'aws s3 cp ferari_website.tar.gz s3://jenkins-yotam'
                 }
             }
         }
