@@ -70,7 +70,13 @@ pipeline {
                     ]) {
                         sh 'echo "upload..."'
                         sh 'scp -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ferari_website.tar.gz $SSH_USER@3.93.196.70:/home/ec2-user/'
-                        sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SSH_USER@3.93.196.70 "sudo tar -xzf ferari_website.tar.gz &&rm -rf /home/ec2-user/ansible/ && sudo -S yum install git -y && git clone https://github.com/yotamdavid/ansible.git && cd /home/ec2-user/ansible/ansible/ && ansible-playbook -i inventory.ini my_playbook.yml"'
+                        sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SSH_USER@3.93.196.70 "sudo tar -xzf ferari_website.tar.gz "'
+                        sh 'exit'
+                        sh 'ssh -t yotam@192.168.56.1'
+                        sh 'rm -rf /home/yotam/Desktop/ansible/'
+                        sh 'cd /home/yotam/Desktop && git clone https://github.com/yotamdavid/ansible.git'
+                        sh 'cd /home/yotam/Desktop/ansible/ansible'
+                        sh 'ansible-playbook -i inventory.ini my_playbook.yml'
                     }
                 }
             }
