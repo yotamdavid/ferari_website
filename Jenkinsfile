@@ -72,6 +72,7 @@ pipeline {
                         echo "upload..."
                         scp -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ferari_website.tar.gz $SSH_USER@52.1.3.166:/home/ec2-user/
                         ssh -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SSH_USER@52.1.3.166 "sudo tar -xzf ferari_website.tar.gz"
+                        exit
                         """
                     }
                 }
@@ -85,9 +86,9 @@ pipeline {
                     ]) {
                         sh """
                         echo "runing.."
-                        ssh -tty -i $SSH_KEY -o StrictHostKeyChecking=no $SSH_USER@192.168.56.103
+                        ssh -tty -i "${SSH_KEY}" -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts $SSH_USER@192.168.56.103
                         cd /home/yotam/Desktop/ && sudo rm-rf /ansible/ && git clone https://github.com/yotamdavid/ansible.git
-                        cd /ansible/ansible && sudo systemctl daemon-reload && sudo systemctl start && sudo ansible-playbook -i inventory.ini my_playbook.yml
+                        cd /ansible/ansible && sudo apt install ansible && sudo systemctl daemon-reload && sudo systemctl start && sudo ansible-playbook -i inventory.ini my_playbook.yml
                         """
 
                     }
