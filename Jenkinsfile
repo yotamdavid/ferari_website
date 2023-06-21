@@ -53,8 +53,8 @@ pipeline {
                         sshUserPrivateKey(credentialsId: 'ec2-test', keyFileVariable: 'SSH_KEY', passphraseVariable: '', usernameVariable: 'SSH_USER')
                     ]) {
                         sh 'echo "Deploying..."'
-                        sh 'scp -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ferari_website.tar.gz $SSH_USER@54.159.62.61:/home/ec2-user/'
-                        sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SSH_USER@54.159.62.61 "tar -xzf ferari_website.tar.gz && cd ferari_website/web_project && sudo bash flaskrun.sh && sudo bash /home/ec2-user/ferari_website/web_project/test.sh && sudo bash /home/ec2-user/ferari_website/web_project/flask_stop.sh"'
+                        sh 'scp -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ferari_website.tar.gz $SSH_USER@54.242.47.87:/home/ec2-user/'
+                        sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SSH_USER@54.242.47.87 "tar -xzf ferari_website.tar.gz && cd ferari_website/web_project && sudo bash flaskrun.sh && sudo bash /home/ec2-user/ferari_website/web_project/test.sh && sudo bash /home/ec2-user/ferari_website/web_project/flask_stop.sh"'
                         sh 'echo "tasting.."'
                         sh 'exit'
                     }
@@ -70,10 +70,23 @@ pipeline {
                     ]) {
                         sh """
                         echo "upload..."
-                        scp -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ferari_website.tar.gz $SSH_USER@34.238.124.145:/home/ec2-user/
-                        ssh -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SSH_USER@34.238.124.145 "sudo tar -xzf ferari_website.tar.gz"
-                        sudo yum install python3-pip -y && sudo pip3 install ansible && sudo yum install git
-                        cd /home/ec2-user && git clone https://github.com/yotamdavid/ansible.git
+                        scp -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ferari_website.tar.gz $SSH_USER@52.1.3.166:/home/ec2-user/
+                        ssh -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SSH_USER@52.1.3.166 "sudo tar -xzf ferari_website.tar.gz"
+                        """
+                    }
+                }
+            }
+        }
+           stage('run ansible') {
+            steps {
+                script {
+                    withCredentials([
+                        sshUserPrivateKey(credentialsId: 'yotam', keyFileVariable: 'SSH_KEY', passphraseVariable: '', usernameVariable: 'SSH_USER')
+                    ]) {
+                        sh """
+                        echo "runing.."
+                        ssh -tty -i $SSH_KEY -o StrictHostKeyChecking=no $SSH_USER@192.168.56.103
+                        cd /home/yotam/Desktop/ && sudo rm-rf /ansible/ && git clone https://github.com/yotamdavid/ansible.git
                         cd /ansible/ansible && sudo systemctl daemon-reload && sudo systemctl start && sudo ansible-playbook -i inventory.ini my_playbook.yml
                         """
 
