@@ -22,5 +22,3 @@ sudo pip3 install flask
 export FLASK_APP=app
 nohup flask run &
 
-# Print a message
-echo "Flask is running in the background."
