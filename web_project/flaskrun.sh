@@ -18,7 +18,9 @@ cd /home/ec2-user/ferari_website/web_project
 # Install Flask
 sudo pip3 install flask
 
-# Run Flask on port 5000
+# Run Flask on port 5000 in the background
 export FLASK_APP=app
-flask run 
+nohup flask run &
 
+# Print a message
+echo "Flask is running in the background."
