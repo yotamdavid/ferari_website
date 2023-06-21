@@ -78,21 +78,14 @@ pipeline {
                 }
             }
         }
-           stage('run ansible') {
+        
+        stage('run ansible') {
             steps {
-                script {
-                    withCredentials([
-                        sshUserPrivateKey(credentialsId: 'yotam', keyFileVariable: 'SSH_KEY', passphraseVariable: '', usernameVariable: 'SSH_USER')
-                    ]) {
-                        sh """
-                        echo "runing.."
-                        ssh -tty -i "${SSH_KEY}" -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts $SSH_USER@192.168.56.103
-                        cd /home/yotam/Desktop/ && sudo rm-rf /ansible/ && git clone https://github.com/yotamdavid/ansible.git
-                        cd /ansible/ansible && sudo apt install ansible && sudo systemctl daemon-reload && sudo systemctl start && sudo ansible-playbook -i inventory.ini my_playbook.yml
-                        """
-
-                    }
-                }
+                sh """
+                echo "runing.."
+                git clone https://github.com/yotamdavid/ansible.git
+                cd $WORKSPACE/ansible && systemctl --no-pager daemon-reload && systemctl start && ansible-playbook -i inventory.ini my_playbook.yml
+                """
             }
         }
     }
