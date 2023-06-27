@@ -21,5 +21,3 @@ sudo pip3 install flask
 # Run Flask on port 5000 in the background
 export FLASK_APP=app
 nohup flask run &
-sleep 5
-
