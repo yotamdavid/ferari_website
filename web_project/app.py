@@ -9,7 +9,7 @@ users = []
 
 
 # דף הראשי
-@app.route('/')
+@app.rout('/')
 def index():
     return render_template('index.html')
 
