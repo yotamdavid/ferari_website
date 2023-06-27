@@ -49,15 +49,18 @@ pipeline {
             steps {
                 script {
                     withCredentials([
-                        sshUserPrivateKey(credentialsId: 'ec2-prod', keyFileVariable: 'SSH_KEY', passphraseVariable: '', usernameVariable: 'SSH_USER')
+                        usernamePassword(credentialsId: 'yotamP', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASSWORD')
                     ]) {
                         sh """
                         echo "upload..."
-                        ssh -i $SSH_KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SSH_USER@34.207.165.182 "sudo yum install git -y"
-                        echo "running.."
-                        rm -rf ansible
-                        git clone https://github.com/yotamdavid/ansible.git
-                        cd home/ec2-user/ansible/ansible && sudo ansible-playbook -i inventory.ini my_playbook.yml
+                        sshpass -p '$SSH_PASSWORD' ssh -o PreferredAuthentications=password -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null yotam@192.168.56.103 '
+                            cd /home/yotam/Desktop/ &&
+                            echo "running.." &&
+                            sudo -S rm -rf ansible <<< "$SSH_PASSWORD" &&
+                            git clone https://github.com/yotamdavid/ansible.git &&
+                            cd /home/yotam/Desktop/ansible/ansible &&
+                            sudo -S ansible-playbook -i inventory.ini my_playbook.yml <<< "$SSH_PASSWORD"
+                        '
                         """
                     }
                 }
@@ -65,4 +68,3 @@ pipeline {
         }
     }
 }
-
